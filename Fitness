@@ -1,0 +1,569 @@
+
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101410">
+<title>Jackson Fitness | Plano de Treino</title>
+
+<style>
+:root {
+  --bg: #101410;
+  --card: #1b211b;
+  --green: #8bd34b;
+  --text: #f4f7f1;
+  --muted: #9da99a;
+  --border: #303a30;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+header {
+  padding: 22px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: #101410f5;
+  z-index: 10;
+}
+.logo { font-size: 21px; font-weight: 900; }
+.logo span { color: var(--green); }
+nav { display: flex; gap: 18px; }
+nav a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+}
+nav a:hover { color: var(--green); }
+
+.container { width: 90%; max-width: 1100px; margin: auto; }
+
+.hero { padding: 65px 0 45px; }
+.tag {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+h1 { font-size: clamp(35px, 7vw, 62px); line-height: 1.1; margin: 15px 0; }
+h1 span { color: var(--green); }
+.hero p { color: var(--muted); max-width: 550px; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 14px;
+  margin: 30px 0;
+}
+.stat {
+  background: var(--card);
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.stat strong { display: block; color: var(--green); font-size: 27px; }
+.stat small { color: var(--muted); }
+
+section { padding: 35px 0; }
+.section-title { font-size: 27px; margin-bottom: 20px; }
+.section-title span { color: var(--green); }
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  gap: 10px;
+}
+.day-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: white;
+  padding: 15px 5px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.day-btn.active {
+  background: var(--green);
+  color: #101410;
+  font-weight: bold;
+}
+.day-btn small { display: block; }
+
+.workout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 25px 0;
+}
+.workout-header h3 { font-size: 23px; }
+.workout-header p { color: var(--muted); font-size: 13px; }
+
+.exercise-list {
+  display: grid;
+  gap: 13px;
+}
+.exercise {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
+.exercise.done { opacity: .55; border-color: var(--green); }
+.exercise.done .exercise-name { text-decoration: line-through; }
+.exercise-info { display: flex; gap: 13px; align-items: center; }
+.number {
+  background: #293a25;
+  color: var(--green);
+  min-width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+.exercise-name { font-weight: bold; }
+.exercise-machine { color: var(--muted); font-size: 12px; }
+.exercise-data { text-align: right; white-space: nowrap; }
+.exercise-data strong { color: var(--green); display: block; }
+.exercise-data small { color: var(--muted); }
+
+.check {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.progress-box, .info-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 22px;
+  border-radius: 14px;
+  margin-top: 20px;
+}
+.progress-track {
+  height: 10px;
+  background: #303a30;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  transition: .3s;
+}
+.timer {
+  text-align: center;
+}
+.timer strong {
+  display: block;
+  font-size: 48px;
+  color: var(--green);
+  margin: 10px;
+}
+button.action {
+  background: var(--green);
+  color: #101410;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+}
+button.secondary {
+  background: #303a30;
+  color: white;
+}
+.rules {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+}
+.rule {
+  padding: 18px;
+  background: var(--card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.rule strong { color: var(--green); }
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+
+@media(max-width:650px) {
+  nav { gap: 10px; }
+  nav a { font-size: 11px; }
+  .stats { grid-template-columns: repeat(3,1fr); gap: 7px; }
+  .stat { padding: 12px 7px; }
+  .stat strong { font-size: 21px; }
+  .stat small { font-size: 10px; }
+  .days { grid-template-columns: repeat(3,1fr); }
+  .rules { grid-template-columns: 1fr; }
+  .exercise { padding: 13px 9px; }
+  .exercise-data { font-size: 12px; }
+  .exercise-info { gap: 8px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">JACKSON<span>FITNESS</span></div>
+  <nav>
+    <a href="#inicio">Início</a>
+    <a href="#treino">Treinos</a>
+    <a href="#progresso">Progresso</a>
+  </nav>
+</header>
+
+<main class="container">
+
+<section class="hero" id="inicio">
+  <div class="tag">DISCIPLINA • FORÇA • EVOLUÇÃO</div>
+  <h1>CONSTRÓI A TUA<br><span>MELHOR VERSÃO.</span></h1>
+  <p>
+    O teu plano pessoal de ginásio. Cinco dias de treino,
+    exercícios organizados e acompanhamento da tua evolução.
+  </p>
+
+  <div class="stats">
+    <div class="stat">
+      <strong>05</strong>
+      <small>Dias por semana</small>
+    </div>
+    <div class="stat">
+      <strong>90</strong>
+      <small>Minutos disponíveis</small>
+    </div>
+    <div class="stat">
+      <strong>100%</strong>
+      <small>Foco na evolução</small>
+    </div>
+  </div>
+</section>
+
+<section id="treino">
+  <div class="tag">PLANO SEMANAL</div>
+  <h2 class="section-title">A tua <span>rotina</span></h2>
+
+  <div class="days" id="days"></div>
+
+  <div class="workout-header">
+    <div>
+      <h3 id="day-title"></h3>
+      <p id="day-description"></p>
+    </div>
+    <button class="action secondary" onclick="resetDay()">
+      Reiniciar dia
+    </button>
+  </div>
+
+  <div class="exercise-list" id="exercise-list"></div>
+
+  <div class="progress-box">
+    <strong>Progresso do treino</strong>
+    <div class="progress-track">
+      <div class="progress-fill" id="day-progress"></div>
+    </div>
+    <small id="progress-text">0 exercícios concluídos</small>
+  </div>
+</section>
+
+<section id="progresso">
+  <div class="tag">ACOMPANHAMENTO</div>
+  <h2 class="section-title">O teu <span>progresso</span></h2>
+
+  <div class="progress-box">
+    <strong>Progresso semanal</strong>
+    <div class="progress-track">
+      <div class="progress-fill" id="week-progress"></div>
+    </div>
+    <p id="week-text">0 de 25 exercícios concluídos</p>
+  </div>
+</section>
+
+<section>
+  <div class="tag">FERRAMENTA</div>
+  <h2 class="section-title">Temporizador de <span>descanso</span></h2>
+
+  <div class="info-card timer">
+    <p>Descansa entre as séries</p>
+    <strong id="timer-display">01:30</strong>
+    <button class="action" onclick="startTimer()">Iniciar</button>
+    <button class="action secondary" onclick="pauseTimer()">Pausar</button>
+    <button class="action secondary" onclick="resetTimer()">Reiniciar</button>
+  </div>
+</section>
+
+<section>
+  <div class="tag">HÁBITOS</div>
+  <h2 class="section-title">Regras para <span>evoluir</span></h2>
+
+  <div class="rules">
+    <div class="rule">
+      <strong>01. Aquecimento</strong>
+      <p>Faz 5 a 10 minutos antes de começar.</p>
+    </div>
+    <div class="rule">
+      <strong>02. Descanso</strong>
+      <p>Descansa 60 a 120 segundos entre séries.</p>
+    </div>
+    <div class="rule">
+      <strong>03. Alimentação</strong>
+      <p>Mantém uma alimentação variada e suficiente.</p>
+    </div>
+    <div class="rule">
+      <strong>04. Sono</strong>
+      <p>Procura dormir 8 a 10 horas.</p>
+    </div>
+    <div class="rule">
+      <strong>05. Técnica</strong>
+      <p>Aprende os movimentos antes de aumentar os pesos.</p>
+    </div>
+    <div class="rule">
+      <strong>06. Recuperação</strong>
+      <p>Respeita os dias de descanso.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="info-card">
+    <h3>Fim de semana</h3>
+    <p>Sábado e domingo: descanso, recuperação e atividades leves.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <strong>JACKSON FITNESS</strong>
+  <p>Disciplina hoje. Evolução todos os dias.</p>
+  <small>Plano de treino pessoal</small>
+</footer>
+
+<script>
+const workouts = [
+{
+  name:"Segunda-feira",
+  focus:"Peito e tríceps",
+  exercises:[
+    ["Chest Press","Máquina de peito","3 × 10-12"],
+    ["Supino inclinado","Halteres","2 × 10"],
+    ["Peck Deck","Máquina de peito","2 × 12"],
+    ["Tríceps na polia","Polia com corda","2 × 12"],
+    ["Extensão de tríceps","Máquina","2 × 12"]
+  ]
+},
+{
+  name:"Terça-feira",
+  focus:"Costas e bíceps",
+  exercises:[
+    ["Puxada alta","Lat Pulldown","3 × 12"],
+    ["Remada sentada","Máquina","3 × 12"],
+    ["Remada com apoio","Máquina","2 × 10"],
+    ["Bíceps Curl","Máquina","2 × 12"],
+    ["Rosca martelo","Halteres","2 × 10"]
+  ]
+},
+{
+  name:"Quarta-feira",
+  focus:"Abdómen e estabilidade",
+  exercises:[
+    ["Abdominal Crunch","Máquina","3 × 12"],
+    ["Prancha","Peso corporal","3 × 20-30 segundos"],
+    ["Elevação de joelhos","Peso corporal","2 × 10"],
+    ["Dead Bug","Colchonete","2 × 10 por lado"],
+    ["Bird Dog","Colchonete","2 × 10 por lado"]
+  ]
+},
+{
+  name:"Quinta-feira",
+  focus:"Pernas",
+  exercises:[
+    ["Leg Press","Máquina","3 × 12"],
+    ["Leg Extension","Máquina","2 × 12"],
+    ["Leg Curl","Máquina","3 × 12"],
+    ["Cadeira abdutora","Máquina","2 × 12"],
+    ["Gémeos","Máquina","3 × 12"]
+  ]
+},
+{
+  name:"Sexta-feira",
+  focus:"Ombros e braços",
+  exercises:[
+    ["Shoulder Press","Máquina","2 × 10"],
+    ["Elevação lateral","Halteres","2 × 12"],
+    ["Face Pull","Polia","2 × 12"],
+    ["Bíceps Curl","Máquina","2 × 12"],
+    ["Rosca martelo","Halteres","2 × 10"],
+    ["Tríceps na polia","Polia com corda","2 × 12"]
+  ]
+}
+];
+
+let currentDay = 0;
+let completed = JSON.parse(localStorage.getItem("jacksonFitnessProgress") || "{}");
+
+function save() {
+  localStorage.setItem("jacksonFitnessProgress",JSON.stringify(completed));
+}
+
+function renderDays() {
+  document.getElementById("days").innerHTML = workouts.map((day,i)=>`
+    <button class="day-btn ${i===currentDay?"active":""}"
+      onclick="selectDay(${i})">
+      ${day.name.split("-")[0]}
+      <small>${day.focus}</small>
+    </button>
+  `).join("");
+}
+
+function selectDay(index) {
+  currentDay = index;
+  render();
+}
+
+function renderExercises() {
+  const day = workouts[currentDay];
+  document.getElementById("day-title").textContent =
+    day.name+" — "+day.focus;
+
+  document.getElementById("day-description").textContent =
+    day.exercises.length+" exercícios • Técnica e controlo";
+
+  document.getElementById("exercise-list").innerHTML =
+    day.exercises.map((ex,i)=>{
+      const key = currentDay+"-"+i;
+      const isDone = !!completed[key];
+      return `
+      <div class="exercise ${isDone?"done":""}">
+        <div class="exercise-info">
+          <div class="number">${i+1}</div>
+          <div>
+            <div class="exercise-name">${ex[0]}</div>
+            <div class="exercise-machine">${ex[1]}</div>
+          </div>
+        </div>
+        <div class="exercise-data">
+          <strong>${ex[2]}</strong>
+          <small>Séries × repetições</small>
+        </div>
+        <input class="check" type="checkbox"
+          ${isDone?"checked":""}
+          onchange="toggleExercise('${key}',this.checked)">
+      </div>`;
+    }).join("");
+
+  updateProgress();
+}
+
+function toggleExercise(key,value) {
+  completed[key] = value;
+  save();
+  renderExercises();
+}
+
+function resetDay() {
+  workouts[currentDay].exercises.forEach((_,i)=>{
+    delete completed[currentDay+"-"+i];
+  });
+  save();
+  render();
+}
+
+function updateProgress() {
+  const total = workouts[currentDay].exercises.length;
+  const done = workouts[currentDay].exercises.filter(
+    (_,i)=>completed[currentDay+"-"+i]
+  ).length;
+
+  document.getElementById("day-progress").style.width =
+    (done/total*100)+"%";
+
+  document.getElementById("progress-text").textContent =
+    done+" de "+total+" exercícios concluídos";
+
+  const weekTotal = workouts.reduce(
+    (sum,d)=>sum+d.exercises.length,0
+  );
+
+  const weekDone = Object.values(completed).filter(Boolean).length;
+
+  document.getElementById("week-progress").style.width =
+    (weekDone/weekTotal*100)+"%";
+
+  document.getElementById("week-text").textContent =
+    weekDone+" de "+weekTotal+" exercícios concluídos";
+}
+
+function render() {
+  renderDays();
+  renderExercises();
+}
+
+let remaining = 90;
+let interval = null;
+
+function displayTimer() {
+  const min = Math.floor(remaining/60);
+  const sec = remaining%60;
+  document.getElementById("timer-display").textContent =
+    String(min).padStart(2,"0")+":"+
+    String(sec).padStart(2,"0");
+}
+
+function startTimer() {
+  if(interval) return;
+  interval = setInterval(()=>{
+    if(remaining>0) {
+      remaining--;
+      displayTimer();
+    } else {
+      clearInterval(interval);
+      interval=null;
+      alert("Descanso terminado!");
+    }
+  },1000);
+}
+
+function pauseTimer() {
+  clearInterval(interval);
+  interval=null;
+}
+
+function resetTimer() {
+  pauseTimer();
+  remaining=90;
+  displayTimer();
+}
+
+render();
+displayTimer();
+</script>
+
+</body>
+</html>
